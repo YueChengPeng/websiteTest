@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script type="text/javascript" src="js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="js/scrollmagic/uncompressed/ScrollMagic.js"></script>
+    <script type="text/javascript" src="js/scrollmagic/uncompressed/plugins/debug.addIndicators.js"></script>
+    <script type="text/javascript" src="js/lib/greensock/TweenMax.min.js"></script>
+    <script type="text/javascript" src="js/scrollmagic/uncompressed/plugins/animation.gsap.js"></script>
+    <script src="https://use.typekit.net/nlq1kdt.js"></script>
+
+    <script src="https://d3js.org/d3.v6.js"></script>
+
+
+
+    <!-- BOOTSTRAP5 最新编译并压缩的 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- 最新编译的 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://use.typekit.net/upe5kqr.css"> <!--字体-->
+
+    <style>
+      html {
+          font-size: 24px; /*rem（font size of the root element）是指相对于根元素的字体大小的单位*/
+      }
+
+      body {
+          background: #141414;
+      }
+
+      @font-face {
+          font-family: impact;
+          src: url("font/Impact.ttf");
+      }
+
+      .h1title{
+          font-family: impact;
+          font-size: 4rem;
+      }
+
+      .h2title{
+          font-family: impact;
+          font-size: 2rem;
+      }
+
+      .fontGrad45{
+          background-image: -webkit-linear-gradient(45deg, #da7d1e, #ffc000);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+      }
+
+      .fontWhite{
+          color: rgba(255, 255, 255, 0.84);
+      }
+
+      .normalContent{
+          font-family: noto-sans, sans-serif;
+          font-weight: 300;
+          font-style: normal;
+          font-size: .7rem;
+          color: rgba(255, 255, 255, 0.71);
+      }
+
+      .normalContentBigword{
+          font-family: noto-sans, sans-serif;
+          font-weight: 500;
+          font-style: normal;
+          font-size: 1rem;
+          color: rgba(255, 255, 255, 0.71);
+      }
+
+      .normalContentBigwordHighlight{
+          font-family: noto-sans, sans-serif;
+          font-weight: 500;
+          font-style: normal;
+          font-size: 1rem;
+          color: rgba(255, 192, 0, 0.9);
+      }
+
+      .bigNumbers{
+          font-family: noto-sans, sans-serif;
+          font-weight: 600;
+          font-style: normal;
+          font-size: 1.2rem;
+          color: rgba(255, 192, 0, 0.9);
+      }
+
+      .normalContentHighlightLink{
+          font-family: noto-sans, sans-serif;
+          font-weight: 600;
+          font-style: normal;
+          font-size: .8rem;
+          text-decoration: underline;
+          color: rgba(255, 192, 0, 0.9);
+      }
+
+
+      .normalContentHighlight{
+          font-family: noto-sans, sans-serif;
+          font-weight: 500;
+          font-style: normal;
+          font-size: .7rem;
+          color: rgba(255, 192, 0, 0.9);
+      }
+
+    </style>
+
+</head>
+<body>
+
+<!--video和遮挡的矩形-->
+<div style="position:absolute;left: 50%; top: 50%; transform: translate(-50%, -50%); /* 50%为自身尺寸的一半 */
+    -webkit-transform: translate(-50%, -50%); z-index: -1; ">
+    <div style="position:absolute; transform: translate(0px, -1px); height: 20%; width: 100%; background-image: -webkit-linear-gradient(90deg, rgba(20,20,20,0), #141414)"></div>
+    <div style="position:absolute; transform: translate(0px, -1px); height: 20%; width: 100%; background-image: -webkit-linear-gradient(90deg, rgba(20,20,20,0), #141414)"></div>
+    <div style="position:absolute; transform: translate(0px, 400%); height: 20%; width: 100%; background-image: -webkit-linear-gradient(90deg, #141414, rgba(20,20,20,0))"></div>
+    <div style="position:absolute; transform: translate(0px, 400%); height: 20%; width: 100%; background-image: -webkit-linear-gradient(90deg, #141414, rgba(20,20,20,0))"></div>
+
+    <div style="position:absolute; height: 100%; width: 100%; background-color: #141414; opacity: .3"></div>
+
+    <video id="coverVideo" src="vedio/coverVideo.mp4" style="height: 90vh;" autoplay="autoplay" muted="muted" loop="loop"></video>
+</div>
+
+<!--封面文字-->
+<div style="margin-left: 5rem; margin-right: 5rem; height:100vh; display: flex; flex-direction: row; justify-content: space-between;">
+    <div style="height:100%; display: flex; flex-direction: column; justify-content: center">
+        <span class="h1title fontWhite"  >A BLOW OF</span>
+        <span class="h1title fontGrad45" >ANGRY WIND</span>
+        <span class="h1title fontWhite" >BROKE CHAINS</span>
+        <span class="h1title fontWhite" > ON A MOTHER</span>
+    </div>
+    <div style="height:100%; display: flex; flex-direction: column; justify-content: center">
+        <div style="display: flex; flex-direction: column">
+            <span id="coverNoViews" class="h1title fontGrad45" align="right">0</span>
+            <span class="h1title fontWhite" align="right" style="font-size: 1rem; opacity: .6">views</span>
+            <br>
+        </div>
+
+        <div style="display: flex; flex-direction: column">
+            <span id="coverNoDiscussions" class="h1title fontGrad45" align="right">0</span>
+            <span class="h1title fontWhite" align="right" style="font-size: 1rem; opacity: .6">discussions</span>
+            <br>
+        </div>
+
+        <div style="display: flex; flex-direction: column">
+            <span id="coverNoOriginals" class="h1title fontGrad45" align="right">0</span>
+            <span class="h1title fontWhite" align="right" style="font-size: 1rem; opacity: .6">original users</span>
+            <br>
+        </div>
+
+    </div>
+</div>
+
+<div style="margin-left: 20rem; margin-right: 20rem; margin-top: 10rem; margin-bottom: 5rem">
+
+    <p class="normalContent" style="">
+        In Jan 27, 2022, a TikTok video of a Chinese mother of eight locked up in a worn-out village shed with a chain around her neck went viral and sparked widespread outrage.
+    </p>
+
+    <p class="normalContent">
+        When authorities wanted to cover up the truth and released a series of conflicting reports while official media kept silence, a blow of<span class="normalContentHighlight"> ANGRY WIND </span> swept through the social media.
+    </p>
+
+</div>
+
+<!--wind 链接卡片-->
+<div style="margin-left: 20rem; margin-right: 20rem; height: fit-content; background-color: rgba(24,24,24,0.5); border-radius:25px; margin-bottom: 10rem; padding-top: 2rem; padding-bottom: 2rem;
+            -webkit-box-shadow: rgba(192,187,180,0.2) 0px 0px 50px;
+            -moz-box-shadow: rgba(192,187,180,0.2) 0px 0px 50px;
+            box-shadow: rgba(192,187,180,0.2) 0px 0px 50px;">
+    <div style="margin-left: auto; margin-right: auto; width: 20rem; margin-bottom: 1.5rem">
+        <img src="img/windglyph.png" style="width: 20rem;">
+    </div>
+    <div style="margin-left: auto; margin-right: auto; width: fit-content; ">
+        <p class="normalContentBigword" style="margin: 0rem">This is the result of visualizing public voices on Weibo</p>
+        <p class="normalContentBigword" style="margin: 0px; text-align: center">And we saw wisps of red, angry wind</p>
+        <p class="normalContentHighlightLink" style="margin: 0px; margin-top: 1rem; text-align: center">See FULL visualization project</p>
+    </div>
+</div>
+
+<!--quote-->
+<div style="margin-left: 20rem; margin-right: 20rem; margin-top: 10rem; margin-bottom: 15rem">
+    <p class="fontGrad45" style="font-family: impact; font-size: 18rem; position: absolute; margin: 0px; margin-top: -10rem;
+            transform: translate(-15rem, 0px)">“</p>
+    <p class="normalContent" style="">
+        The progress (of this incident) is largely driven by <span class="normalContentHighlight">Internet public opinion</span>, which has enormous positivity, and has become an indispensable part of the driving force for governance progress.
+    </p>
+
+    <div style="float: right; display: flex;">
+        <p class="normalContent" style="transform: translate(14rem, 0px)"><span class="normalContentHighlight">@</span> Xijin Hu, former chief editor of <span style="font-style: italic;">Global Times</span></p>
+        <img src="img/huxijin.png" style="width: 3rem; transform: translate(15rem, 0px)">
+    </div>
+</div>
+
+<!--Design with data-->
+<div style="margin-left: 20rem; margin-right: 20rem; margin-top: 10rem; margin-bottom: 15rem; ">
+    <img src="img/Vr.png" style="position: absolute; width: 20rem; transform: translate(-20rem, 0px); margin-top: -5rem">
+    <img src="img/mars.png" style="position: absolute; right: 0; width: 20rem;margin-top: -2rem">
+    <p class="h2title" style="text-align: center"><span class="fontWhite">DESIGN WITH</span> <span class="fontGrad45">DATA</span></p>
+    <p class="normalContent">When people are talking about the Metaverse, emigrating to Mars and other fancy things alike, it’s unbelievable that in some impoverished rural areas, even the most basic <span class="normalContentHighlight">human rights</span> are being violated. And that’s when I decided to do something with design.</p>
+    <p class="normalContent" style="margin-top: 2rem">Since most discussions of this incident happened online, where public opinion can easily be measured by data, I want to finish my design utilizing <span class="normalContentHighlight">data on social media</span>.</p>
+    <p class="normalContentBigword" style="margin-top: 2rem">Through my work, I thought, I could demonstrate the <span class="normalContentBigwordHighlight">incomparable strength of public opinion</span> visually, and call for more awareness and action towards human trafficking and many other social issues alike.</p>
+
+
+</div>
+
+<!--Design Questions-->
+<div style="margin-left: 20rem; margin-right: 20rem; margin-top: 10rem; margin-bottom: 15rem">
+    <p class="h2title" style="text-align: center"><span class="fontWhite">DESIGN </span> <span class="fontGrad45">QUESTIONS</span></p>
+    <p class="normalContent" style="margin-bottom: 2rem">And most importantly, I wanted to use data to answer following questions:</p>
+
+    <div style="display: flex; flex-direction: row; margin-bottom: 1rem; align-items: center;">
+        <p class="h2title fontGrad45" style="margin: 0px; margin-right: 1rem; font-size: 2rem; height: fit-content">1</p>
+        <p class="normalContentBigword" style="margin: 0px; height: fit-content">What <span class="normalContentBigwordHighlight">voices</span> were made in different stages of this saga?
+            Who were <span class="normalContentBigwordHighlight">influencers</span> of this incident?</p>
+    </div>
+
+    <div style="display: flex; flex-direction: row; margin-bottom: 1rem; align-items: center;">
+        <p class="h2title fontGrad45" style="margin: 0px; margin-right: 1rem; font-size: 2rem; height: fit-content">2</p>
+        <p class="normalContentBigword" style="margin: 0px; height: fit-content">How to portrait the <span class="normalContentBigwordHighlight">overview</span> of public opinions?</p>
+    </div>
+
+    <div style="display: flex; flex-direction: row; margin-bottom: 1rem; align-items: center;">
+        <p class="h2title fontGrad45" style="margin: 0px; margin-right: 1rem; font-size: 2rem; height: fit-content">3</p>
+        <p class="normalContentBigword" style="margin: 0px; height: fit-content">Are there <span class="normalContentBigwordHighlight">similar cases</span> around the world? Where and how many?</p>
+    </div>
+
+    <div style="display: flex; flex-direction: row; margin-bottom: 1rem; align-items: center;">
+        <p class="h2title fontGrad45" style="margin: 0px; margin-right: 1rem; font-size: 2rem; height: fit-content">4</p>
+        <p class="normalContentBigword" style="margin: 0px; height: fit-content"> How to reflect <span class="normalContentBigwordHighlight">data humanism</span> in visual design?</p>
+    </div>
+
+</div>
+
+<!--Data Collection-->
+<div style="margin-left: 20rem; margin-right: 20rem; margin-top: 10rem;">
+    <p class="h2title" style="text-align: center"><span class="fontWhite">DATA</span> <span class="fontGrad45">COLLECTION</span></p>
+    <p class="normalContent">I collected data from <a class="normalContentHighlight" style="text-decoration: underline" href="https://weibo.com" target="_blank">weibo.com</a>, and human trafficking data from <a class="normalContentHighlight" href="https://www.ctdatacollaborative.org/" target="_blank">Counter Trafficking Data Collaborative (CTDC)</a>.</p>
+</div>
+<div id="trigger1"></div>
+
+<!--Data Collection-->
+<div class="row" style="margin-right: 5rem; margin-left: 5rem; ">
+    <div class="col-lg" style="">
+        <div style="padding: 5rem; ">
+            <div style="margin-bottom: 16rem; margin-top: 8rem">
+                <p class="normalContent" style="margin-bottom: 0rem">To answer the <span class="normalContentHighlight">first design question</span>, </p>
+                <p class="normalContent">data of <span class="bigNumbers fontGrad45">4,725</span> posts from <a class="normalContentHighlight" style="text-decoration: underline" href="https://weibo.com" target="_blank">weibo.com</a> was collected.</p>
+            </div>
+
+            <div style="margin-bottom: 16rem">
+                <p class="normalContent">I used API from Baidu AI open platform and processed the result to get the sentiment score between 0 and 1.</p>
+            </div>
+
+            <div style="margin-bottom: 16rem">
+                <p class="normalContent" style="margin-bottom: 0rem">To answer the <span class="normalContentHighlight">second design question</span>, </p>
+                <p class="normalContent">data of <span class="bigNumbers fontGrad45">142</span> hashtags from <a class="normalContentHighlight" style="text-decoration: underline" href="https://weibo.com" target="_blank">weibo.com</a> was collected.</p>
+            </div>
+
+            <div style="margin-bottom: 16rem">
+                <p class="normalContent" style="margin-bottom: 1rem">However, many hashtags had similar content, thus requiring categorization.</p>
+                <p class="normalContent" style="margin-bottom: 0rem">The distribution of hashtag numbers over time indicates <span class="normalContentHighlight">a strong correlation between hashtags and official reports</span>. It inspired me to sort hashtags and posts into following 8 groups.</p>
+            </div>
+
+            <div style="margin-bottom: 16rem">
+                <p class="normalContent" style="margin-bottom: 0rem">To answer the <span class="normalContentHighlight">third design question</span>, </p>
+                <p class="normalContent">data of <span class="bigNumbers fontGrad45">97, 750</span> victims of human trafficking from <a class="normalContentHighlight" style="text-decoration: underline" href="https://www.ctdatacollaborative.org/" target="_blank">CTDC</a> was collected.</p>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    <div class="col-lg">
+        <div id="divFixed" style="padding: 3rem; padding-right: 0px; padding-top: 0rem; ">
+
+
+            <svg id="svg1">
+
+            </svg>
+        </div>
+    </div>
+</div>
+
+
+<div style="height: 100rem"></div>
+
+
+<script>
+    var addSemi = function (num){
+        let numStr = num.toString();
+        let cnt = 0;
+        let resLst = [];
+
+        for(let i = numStr.length - 1; i >= 0 ; i--){
+
+            resLst.push(numStr[i]);
+            cnt += 1;
+            if (cnt % 3 == 0)
+            {
+                cnt = 0;
+                resLst.push(',');
+            }
+        }
+
+        let res = "";
+        for(let i = resLst.length - 1; i >= 0 ; i--){
+            res += resLst[i];
+        }
+        if(res[0] == ",")
+            res = res.substring(1,);
+        return res;
+    }
+
+    const $setJumpNumber = (startNum, targetNum, time = 1, selector) => {
+
+        let dom = document.querySelector(selector);
+
+        let originNum = startNum;
+
+        let stepNum = 0;
+
+        let timeNum = time;
+
+        dom.innerHTML = startNum;
+
+        let timeId = setInterval(() => {
+
+            if (originNum < targetNum) {
+
+                timeNum -= 0.001;
+
+                let strNum = originNum.toString();
+
+                // 数字比较少的时候直接用 + 1; 数字很大直接 +1 要很久才能调到最对应的数字，所有后三位数随机跳动的方式进行模拟生成
+
+                if (targetNum.toString().length <= 6) {
+
+                    stepNum += 10; // 这样才可以实现越跳越快的效果
+
+                    originNum = originNum + stepNum;
+
+                    dom.innerHTML = addSemi(originNum);
+
+                } else if ( targetNum.toString().length >= 12) {
+
+                    stepNum += 1000000; // 这样才可以实现越跳越快的效果
+
+                    originNum = originNum + stepNum;
+
+                    dom.innerHTML = addSemi(strNum.substring(0, strNum.length - 6) + Math.floor(Math.random()*10) + Math.floor(Math.random()*10) + Math.floor(Math.random()*10) + Math.floor(Math.random()*10) + Math.floor(Math.random()*10) + Math.floor(Math.random()*10));
+
+                }
+                else{
+                    stepNum += 200; // 这样才可以实现越跳越快的效果
+
+                    originNum = originNum + stepNum;
+
+                    dom.innerHTML = addSemi(strNum.substring(0, strNum.length - 6) + Math.floor(Math.random()*10) + Math.floor(Math.random()*10) + Math.floor(Math.random()*10) + Math.floor(Math.random()*10) + Math.floor(Math.random()*10) + Math.floor(Math.random()*10));
+
+                }
+
+            } else {
+
+                dom.innerHTML = addSemi(targetNum);
+
+                clearInterval(timeId);
+
+            }
+
+        }, timeNum);
+
+    };
+    // var video = document.getElementById("coverVideo");
+    // video.play();
+    $setJumpNumber(1000000, 118200000000, 1, "#coverNoViews");
+    $setJumpNumber(200000, 11200000, 1, "#coverNoDiscussions");
+    $setJumpNumber(1000, 271000, 1, "#coverNoOriginals");
+</script>
+
+<!--scroll magic动画-->
+<script>
+    var controller = new ScrollMagic.Controller();
+    var divStayedScene = new ScrollMagic.Scene({
+        triggerElement: "#trigger1",
+        duration: 300*24, //设置的比videoEnter更下面，保证视频出现的时候种子相对屏幕还是固定的，让种子的位置是唯一确定的，不会乱动
+        offset: 16*24
+    })
+        .setPin("#divFixed")  // 种子相对页面静止不动
+        // .addIndicators({name: "1 (duration: windowHei)"}) // add indicators (requires plugin)
+        .addTo(controller);
+
+    var divStayedScene2 = new ScrollMagic.Scene({
+        triggerElement: "#trigger1",
+        duration: 4*24, //设置的比videoEnter更下面，保证视频出现的时候种子相对屏幕还是固定的，让种子的位置是唯一确定的，不会乱动
+        offset: 24*24
+    })
+        .on("progress", function (event){
+            d3.select("#postDataImg").style("opacity", 1 - event.progress) ;
+        })  // 种子相对页面静止不动
+
+        // .addIndicators({name: "1 (duration: windowHei)"}) // add indicators (requires plugin)
+        .addTo(controller);
+
+    var divStayedScene3 = new ScrollMagic.Scene({
+        triggerElement: "#trigger1",
+        duration: 4*24, //设置的比videoEnter更下面，保证视频出现的时候种子相对屏幕还是固定的，让种子的位置是唯一确定的，不会乱动
+        offset: 28*24
+    })
+        .on("progress", function (event){
+
+            d3.select("#emotionGroup").style("opacity", event.progress) ;
+        })  // 种子相对页面静止不动
+
+        // .addIndicators({name: "1 (duration: windowHei)"}) // add indicators (requires plugin)
+        .addTo(controller);
+
+    var divStayedScene3 = new ScrollMagic.Scene({
+        triggerElement: "#trigger1",
+        duration: 4*24, //设置的比videoEnter更下面，保证视频出现的时候种子相对屏幕还是固定的，让种子的位置是唯一确定的，不会乱动
+        offset: 33*24
+    })
+        .on("progress", function (event){
+
+            d3.select("#emotionRect").style("width", 300 * event.progress) ;
+        })  // 种子相对页面静止不动
+
+        // .addIndicators({name: "1 (duration: windowHei)"}) // add indicators (requires plugin)
+        .addTo(controller);
+
+
+
+</script>
+
+<script>
+
+    var svg1 = d3.select("#svg1")
+        .attr("width", "100%")
+        .attr("height", 0.9 * window.innerHeight);
+
+    var defs = svg1.append("defs");
+//
+    svg1
+        .append("image")
+        .attr("id", "postDataImg")
+        .attr("x",170)
+        .attr("y",190)
+        .attr("width",300)
+        .attr("height",300)
+        .attr("xlink:href","img/postdata.png");
+
+
+    //情感api
+    var emotionGroup = svg1.append("g")
+        .attr("id", "emotionGroup")
+        .style("opacity", "0");
+
+    emotionGroup
+            .append("image")
+            .attr("x",550)
+            .attr("y",300)
+            .attr("width",30)
+            .attr("height",30)
+            .attr("xlink:href","img/smile.svg");
+
+    emotionGroup
+            .append("image")
+            .attr("x",50)
+            .attr("y",300)
+            .attr("width",30)
+            .attr("height",30)
+            .attr("xlink:href","img/sad.svg");
+
+    emotionGroup
+        .append("rect")
+        .attr("x", 100)
+        .attr("y", 303)
+        .attr("width", 430)
+        .attr("height", 24)
+        .attr("fill", "#1f1f1f");
+
+    {
+        //色块渐变
+        var grad45 = defs.append("linearGradient")
+            .attr("id", "grad45")
+            .attr("gradientUnits", "userSpaceOnUse");
+
+        grad45
+            .append("stop")
+            .attr("offset", "0")
+            .style("stop-color", "#ffc000")
+            .style("stop-opacity", "1");
+
+        grad45
+            .append("stop")
+            .attr("offset", "1")
+            .style("stop-color", "#da7d1e")
+            .style("stop-opacity", "1");
+
+        //白色渐变
+        var gradWhite = defs.append("linearGradient")
+            .attr("x1", "315")
+            .attr("y1", "283")
+            .attr("x2", "315")
+            .attr("y2", "347")
+            .attr("id", "gradWhite")
+            .attr("gradientUnits", "userSpaceOnUse");
+
+        gradWhite
+            .append("stop")
+            .attr("offset", "0")
+            .style("stop-color", "#ffffff")
+            .style("stop-opacity", "0");
+
+        gradWhite
+            .append("stop")
+            .attr("offset", "0.5")
+            .style("stop-color", "#ffffff")
+            .style("stop-opacity", ".9");
+
+        gradWhite
+            .append("stop")
+            .attr("offset", "1")
+            .style("stop-color", "#ffffff")
+            .style("stop-opacity", "0");
+
+
+    }
+
+    emotionGroup
+        .append("rect")
+        .attr("id", "emotionRect")
+        .attr("x", 100)
+        .attr("y", 303)
+        .attr("width", 0)
+        .attr("height", 24)
+        .attr("fill", "url(#grad45)");
+
+    //中间虚线
+    emotionGroup
+        .append("line")
+        .attr("id", "emotionRect")
+        .attr("x1", 315)
+        .attr("y1", 303 - 20)
+        .attr("x2", 315)
+        .attr("y2", 327 + 20)
+        .attr("stroke-dasharray", "8, 8")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", "2")
+        .attr("stroke", "url(#gradWhite)");
+
+
+    emotionGroup
+        .append('text')
+        .attr("x",50)
+        .attr("y",360)
+        .style('font-weight', 300)
+        .style("font-size", ".7rem")
+        .style('font-family', 'noto-sans, sans-serif')
+        .style('fill', 'rgba(255,255,255,0.7)')
+        .text("negative")
+
+    emotionGroup
+        .append('text')
+        .attr("x",525)
+        .attr("y",360)
+        .style('font-weight', 300)
+        .style("font-size", ".7rem")
+        .style('font-family', 'noto-sans, sans-serif')
+        .style('fill', 'rgba(255,255,255,0.7)')
+        .text("positive")
+
+    emotionGroup
+        .append('text')
+        .attr("x",302)
+        .attr("y",360)
+        .style('font-weight', 300)
+        .style("font-size", ".7rem")
+        .style('font-family', 'noto-sans, sans-serif')
+        .style('fill', 'rgba(255,255,255,0.7)')
+        .text("0.5")
+
+
+
+
+</script>
+
+
+</body>
+</html>
